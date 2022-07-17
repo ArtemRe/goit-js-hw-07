@@ -31,4 +31,10 @@ function listHendler(event) {
   const instance = basicLightbox.create(`<img src='${target.dataset.source}'>`);
 
   instance.show();
+  window.addEventListener('keydown', OnKeyPress);
+  function OnKeyPress(event) {
+    if (event.code === 'Escape') {
+      instance.close();
+    }
+  }
 }
