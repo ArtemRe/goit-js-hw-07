@@ -16,24 +16,26 @@ function criateEl(array) {
 }
 criateEl(galleryItems);
 const list = document.querySelector('.gallery');
-const result = criateEl(galleryItems);
-list.insertAdjacentHTML('beforeend', result);
+list.insertAdjacentHTML('beforeend', criateEl(galleryItems));
 
-list.addEventListener('click', listHendler);
-function listHendler(event) {
-  event.preventDefault();
-  const target = event.target;
+list.addEventListener('click', onGalleryClick);
 
-  const isGalary = target.classList.contains('gallery__image');
-  if (!isGalary) {
+function onGalleryClick(e) {
+  e.preventDefault();
+  if (!e.target.classList.contains('gallery__image')) {
     return;
   }
-  const instance = basicLightbox.create(`<img src='${target.dataset.source}'>`);
-
+  const instance = basicLightbox.create(
+    `
+    <img src="${e.target.dataset.source}">`,
+    {
+      onShow: instance => window.addEventListener('keydown', closeModalEscape),
+      onClose: instance => window.removeEventListener('keydown', closeModalEscape),
+    }
+  );
   instance.show();
-  window.addEventListener('keydown', OnKeyPress);
-  function OnKeyPress(event) {
-    if (event.code === 'Escape') {
+  function closeModalEscape(e) {
+    if (e.key === 'Escape') {
       instance.close();
     }
   }
